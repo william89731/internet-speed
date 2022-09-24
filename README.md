@@ -34,7 +34,7 @@ install iperf3 in each server:
 ```bash
 sudo apt update && sudo apt install -y iperf3
 ```
-import this [flow]() in nodered:
+import this [flow](https://github.com/william89731/internet-speed/blob/main/speed.json) in nodered:
 
 ![Schermata del 2022-09-24 15-28-46](https://user-images.githubusercontent.com/68069659/192100690-11c151fa-1ba0-4df3-bd84-dff35cc9e57e.png)
 
