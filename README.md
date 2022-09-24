@@ -6,3 +6,28 @@
 [![donate](https://img.shields.io/badge/donate-wango-blue)](https://www.wango.org/donate.aspx)
 
 # Internet speed
+
+monitor the status of your network
+
+# Disclaimer
+
+tested on os debian based
+
+# Requirements
+
+2 machine;
+
+OS [linux]() installed in your system;
+
+[iperf3]();
+
+[nodered]()
+
+# Get started
+
+install iperf3 in each server:
+
+```bash
+sudo apt update &&
+```
+
