@@ -1,0 +1,379 @@
+[
+    {
+        "id": "e159ce3ba981659c",
+        "type": "comment",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "SERVER HOST1",
+        "info": "",
+        "x": 260,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "12568c576eff866f",
+        "type": "ssh-v3",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "host1",
+        "conf": "",
+        "debug": false,
+        "x": 290,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ada2651dc1131d03",
+        "type": "inject",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3600",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iperf3 -s",
+        "payloadType": "str",
+        "x": 260,
+        "y": 360,
+        "wires": [
+            [
+                "12568c576eff866f",
+                "5a6eef4fd2bc4b80"
+            ]
+        ]
+    },
+    {
+        "id": "b5eb8d60155a3b51",
+        "type": "ssh-v3",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "host2",
+        "conf": "",
+        "debug": false,
+        "x": 470,
+        "y": 320,
+        "wires": [
+            [
+                "e6bed725db563ab0"
+            ]
+        ]
+    },
+    {
+        "id": "e6bed725db563ab0",
+        "type": "function",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "get part",
+        "func": "const output = msg.session.stdout[0];\nconst parts = output.split(\" \");\nconst speed = parts[4];\n\nmsg.payload= output ;\n\n\n\nreturn msg;\n\n//msg.payload= \"VELOCIDAD RED ES DE \"  + speed + \" MB/s\" ;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 280,
+        "wires": [
+            [
+                "75e906eaf03b3cca"
+            ]
+        ]
+    },
+    {
+        "id": "248a55bc23c91a4f",
+        "type": "comment",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "CLIENT HOST2",
+        "info": "",
+        "x": 500,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "e3d5827c3e160785",
+        "type": "template",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "cmd client",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "iperf3 -c 192.168.50.84 -t 5 --title speed --json",
+        "output": "str",
+        "x": 480,
+        "y": 280,
+        "wires": [
+            [
+                "b5eb8d60155a3b51"
+            ]
+        ]
+    },
+    {
+        "id": "5a6eef4fd2bc4b80",
+        "type": "delay",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 300,
+        "y": 320,
+        "wires": [
+            [
+                "e3d5827c3e160785"
+            ]
+        ]
+    },
+    {
+        "id": "1a4da0bdbf8fb406",
+        "type": "function",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "get value",
+        "func": "msg.payload = Math.round(msg.payload.end.sum_received.bits_per_second / 1000000);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 360,
+        "wires": [
+            [
+                "1dc2c66d3b5f27c8",
+                "ea2ec77c0d39add8"
+            ]
+        ]
+    },
+    {
+        "id": "75e906eaf03b3cca",
+        "type": "json",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 690,
+        "y": 320,
+        "wires": [
+            [
+                "1a4da0bdbf8fb406"
+            ]
+        ]
+    },
+    {
+        "id": "1dc2c66d3b5f27c8",
+        "type": "switch",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "if low speed",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "100",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 910,
+        "y": 280,
+        "wires": [
+            [
+                "3692e63233f2cd07"
+            ]
+        ]
+    },
+    {
+        "id": "c4977d22ad58e2ce",
+        "type": "telegram sender",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "",
+        "bot": "",
+        "haserroroutput": true,
+        "outputs": 2,
+        "x": 930,
+        "y": 400,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "6859f807b3093b47",
+        "type": "function",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "message telegram",
+        "func": "let alert = msg.payload;\n\nmsg.payload = []\nmsg.payload.chatId = \"xxxxxxxxxx\";\nmsg.payload.type = \"message\";\nmsg.payload.content = alert;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 360,
+        "wires": [
+            [
+                "c4977d22ad58e2ce"
+            ]
+        ]
+    },
+    {
+        "id": "1b707bd557e0f7c1",
+        "type": "comment",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "OUTPUT SPEED",
+        "info": "",
+        "x": 720,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "f6e3db1df2f08eb7",
+        "type": "comment",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "ALERT TELEGRAM",
+        "info": "",
+        "x": 930,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "50c7ebe1e98ee711",
+        "type": "link in",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "link in 2",
+        "links": [
+            "ea2ec77c0d39add8"
+        ],
+        "x": 1085,
+        "y": 280,
+        "wires": [
+            [
+                "6020d1619bb35d08"
+            ]
+        ]
+    },
+    {
+        "id": "ea2ec77c0d39add8",
+        "type": "link out",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "link out 2",
+        "mode": "link",
+        "links": [
+            "50c7ebe1e98ee711"
+        ],
+        "x": 745,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "e1426a29eb05f1cf",
+        "type": "mysql",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "mydb": "",
+        "name": "",
+        "x": 1180,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6020d1619bb35d08",
+        "type": "function",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "push to db",
+        "func": "const speed = msg.payload;\nconst A = Date().toString ();\nconst Parts = A.split(\" \");\nconst Now = Parts[2]  +\" \"+ Parts[3] +\" \"+ Parts[4]  ;\n\n\n\nmsg.payload=[speed , A];\nmsg.topic=\"INSERT INTO speed (`mbs`,`time`) VALUES (?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 280,
+        "wires": [
+            [
+                "e1426a29eb05f1cf"
+            ]
+        ]
+    },
+    {
+        "id": "beaa14957eae4d4e",
+        "type": "comment",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "DATABASE",
+        "info": "",
+        "x": 1180,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "efacfc2ed837f6e6",
+        "type": "comment",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "TEST SPEED/H",
+        "info": "",
+        "x": 260,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "3692e63233f2cd07",
+        "type": "template",
+        "z": "97cda68a7b3f798d",
+        "g": "e6fae9a13e131b76",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "❗❗\nVELOCIDAD DE RED MUY BAJA!",
+        "output": "str",
+        "x": 900,
+        "y": 320,
+        "wires": [
+            [
+                "6859f807b3093b47"
+            ]
+        ]
+    }
+]
