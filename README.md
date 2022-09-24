@@ -11,7 +11,7 @@ monitor the status of your network
 
 # Disclaimer
 
-```tested on os debian based```
+```tested on OS debian based```
 
 # Requirements
 
