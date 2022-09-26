@@ -5,6 +5,8 @@
 [![license](https://img.shields.io/badge/license-Apache--2.0-yellowgreen)](https://apache.org/licenses/LICENSE-2.0)
 [![donate](https://img.shields.io/badge/donate-wango-blue)](https://www.wango.org/donate.aspx)
 
+```DEPRECATED``` in flavour to this new [repo](https://github.com/william89731/monitoring-home-system)
+
 # Internet speed
 
 monitor the status of your network
